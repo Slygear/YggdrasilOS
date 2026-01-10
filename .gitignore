@@ -1,0 +1,71 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Binary files
+*.bin
+*.iso
+*.img
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Build directories
+build/
+bin/
+obj/
+iso/
+*.build/
+
+# QEMU logs
+qemu.log
+serial.log
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Cross-compiler build artifacts
+tools/cross-compiler/build/
+tools/cross-compiler/downloads/
+
+# Backup files
+*.bak
+*.tmp
