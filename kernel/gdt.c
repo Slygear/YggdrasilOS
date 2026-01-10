@@ -2,7 +2,7 @@
  * gdt.c - Global Descriptor Table setup
  */
 
-#include "gdt.h"
+#include "include/gdt.h"
 
 // GDT entry structure
 struct gdt_entry {

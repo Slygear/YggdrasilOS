@@ -2,7 +2,8 @@
  * idt.c - Interrupt Descriptor Table setup
  */
 
-#include "idt.h"
+#include "include/idt.h"
+#include "include/serial.h"
 
 // IDT entry structure
 struct idt_entry {

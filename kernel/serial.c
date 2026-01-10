@@ -3,7 +3,7 @@
  * COM1 serial port communication
  */
 
-#include "serial.h"
+#include "include/serial.h"
 
 #define PORT 0x3f8   // COM1
 
