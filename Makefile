@@ -19,12 +19,12 @@ BOOT_DIR = $(ISO_DIR)/boot
 GRUB_DIR = $(BOOT_DIR)/grub
 
 # Source files
-ASM_SRC = $(ARCH_DIR)/boot.asm
-C_SRC = $(KERNEL_DIR)/kernel.c
+ASM_SRC = $(ARCH_DIR)/boot.asm $(ARCH_DIR)/gdt_flush.asm $(ARCH_DIR)/idt_load.asm $(ARCH_DIR)/isr.asm
+C_SRC = $(KERNEL_DIR)/kernel.c $(KERNEL_DIR)/serial.c $(KERNEL_DIR)/gdt.c $(KERNEL_DIR)/idt.c
 
 # Object files
-ASM_OBJ = $(BUILD_DIR)/boot.o
-C_OBJ = $(BUILD_DIR)/kernel.o
+ASM_OBJ = $(BUILD_DIR)/boot.o $(BUILD_DIR)/gdt_flush.o $(BUILD_DIR)/idt_load.o $(BUILD_DIR)/isr.o
+C_OBJ = $(BUILD_DIR)/kernel.o $(BUILD_DIR)/serial.o $(BUILD_DIR)/gdt.o $(BUILD_DIR)/idt.o
 
 # Output
 KERNEL_BIN = $(BUILD_DIR)/kernel.bin
@@ -38,12 +38,36 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 # Assemble boot.asm
-$(ASM_OBJ): $(ASM_SRC) | $(BUILD_DIR)
-	$(AS) $(ASFLAGS) $(ASM_SRC) -o $(ASM_OBJ)
+$(BUILD_DIR)/boot.o: $(ARCH_DIR)/boot.asm | $(BUILD_DIR)
+	$(AS) $(ASFLAGS) $(ARCH_DIR)/boot.asm -o $(BUILD_DIR)/boot.o
+
+# Assemble gdt_flush.asm
+$(BUILD_DIR)/gdt_flush.o: $(ARCH_DIR)/gdt_flush.asm | $(BUILD_DIR)
+	$(AS) $(ASFLAGS) $(ARCH_DIR)/gdt_flush.asm -o $(BUILD_DIR)/gdt_flush.o
+
+# Assemble idt_load.asm
+$(BUILD_DIR)/idt_load.o: $(ARCH_DIR)/idt_load.asm | $(BUILD_DIR)
+	$(AS) $(ASFLAGS) $(ARCH_DIR)/idt_load.asm -o $(BUILD_DIR)/idt_load.o
+
+# Assemble isr.asm
+$(BUILD_DIR)/isr.o: $(ARCH_DIR)/isr.asm | $(BUILD_DIR)
+	$(AS) $(ASFLAGS) $(ARCH_DIR)/isr.asm -o $(BUILD_DIR)/isr.o
 
 # Compile kernel.c
-$(C_OBJ): $(C_SRC) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $(C_SRC) -o $(C_OBJ)
+$(BUILD_DIR)/kernel.o: $(KERNEL_DIR)/kernel.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -I$(KERNEL_DIR) -c $(KERNEL_DIR)/kernel.c -o $(BUILD_DIR)/kernel.o
+
+# Compile serial.c
+$(BUILD_DIR)/serial.o: $(KERNEL_DIR)/serial.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -I$(KERNEL_DIR) -c $(KERNEL_DIR)/serial.c -o $(BUILD_DIR)/serial.o
+
+# Compile gdt.c
+$(BUILD_DIR)/gdt.o: $(KERNEL_DIR)/gdt.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -I$(KERNEL_DIR) -c $(KERNEL_DIR)/gdt.c -o $(BUILD_DIR)/gdt.o
+
+# Compile idt.c
+$(BUILD_DIR)/idt.o: $(KERNEL_DIR)/idt.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -I$(KERNEL_DIR) -c $(KERNEL_DIR)/idt.c -o $(BUILD_DIR)/idt.o
 
 # Link kernel
 $(KERNEL_BIN): $(ASM_OBJ) $(C_OBJ)

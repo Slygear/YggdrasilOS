@@ -5,6 +5,9 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "include/serial.h"
+#include "include/gdt.h"
+#include "include/idt.h"
 
 // VGA text mode buffer
 #define VGA_MEMORY 0xB8000
@@ -103,6 +106,18 @@ void terminal_writestring(const char* data) {
 
 // Kernel main function
 void kernel_main(void) {
+    // Initialize serial port for debugging
+    serial_init();
+    serial_writestring("[YggdrasilOS] Booting...\n");
+    
+    // Initialize GDT
+    serial_writestring("[YggdrasilOS] Setting up GDT...\n");
+    gdt_init();
+    
+    // Initialize IDT
+    serial_writestring("[YggdrasilOS] Setting up IDT...\n");
+    idt_init();
+    
     // Initialize terminal
     terminal_initialize();
     
@@ -112,7 +127,18 @@ void kernel_main(void) {
     
     terminal_setcolor(vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
     terminal_writestring("Kernel initialized successfully!\n");
-    terminal_writestring("Welcome to YggdrasilOS - The World Tree Operating System\n");
+    terminal_writestring("Welcome to YggdrasilOS - The World Tree Operating System\n\n");
+    
+    terminal_setcolor(vga_entry_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
+    terminal_writestring("Phase 1 Complete:\n");
+    terminal_writestring("  [OK] Bootloader\n");
+    terminal_writestring("  [OK] GDT Setup\n");
+    terminal_writestring("  [OK] IDT Setup\n");
+    terminal_writestring("  [OK] Exception Handlers\n");
+    terminal_writestring("  [OK] Serial Output\n");
+    terminal_writestring("  [OK] VGA Text Mode\n");
+    
+    serial_writestring("[YggdrasilOS] All systems operational!\n");
     
     // Hang
     while (1) {
